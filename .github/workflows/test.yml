@@ -1,0 +1,81 @@
+name: MonadX CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  check:
+    strategy:
+      fail-fast: true
+
+    name: MonadX
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Show Forge version
+        run: |
+          forge --version
+
+      - name: Run Forge fmt
+        run: |
+          forge fmt --check
+        id: fmt
+
+      - name: Run Forge build
+        run: |
+          forge build --sizes
+        id: build
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
+
+      # Step 2: Set up Python for Slither
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x" # Make sure Slither works with your preferred Python version
+
+      # Step 3: Install Slither
+      - name: Install Slither
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install slither-analyzer
+
+      # Step 4: Install solc-select (if using specific solc versions)
+      #
+      - name: Install solc-select
+        run: |
+          pip3 install solc-select
+          #curl -L https://raw.githubusercontent.com/crytic/solc-select/master/install.sh | sh
+          #sudo mv solc-select /usr/local/bin/
+
+      # Step 5: Install Solidity compiler version using solc-select (use the version needed)
+      - name: Set Solidity version
+        run: |
+          solc-select install 0.8.27
+          solc-select use 0.8.27
+
+      # Step 6: Run Slither - temporarily suspended
+      #- name: Run Slither
+      #  run: |
+      #    slither . --filter-paths 'node_modules,lib/openzeppelin-contracts' --json slither-output.json
