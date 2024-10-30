@@ -1,6 +1,6 @@
 
 ## **MonadX**___________________________        ![MonadX](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSgnWRV7cmpYTtjJX1ordkFZGOWbO_6Zy8gg&s)
-The on-chain version of dexter. Development is in progress with a few tests done already. Security auditing, gas optimisation, UX and adminstrative tooling todo 
+An on-chain AMM comprising OME and liquidity pool. Development is in progress with a few tests done already. Security auditing, gas optimisation, UX and adminstrative tooling todo 
 ### Test Results Summary
 
 #### GovernanceTokenTest (GovernanceToken.t.sol)
